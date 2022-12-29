@@ -5,6 +5,7 @@ import { VideoList } from './VideoList'
 export const VideoArea = () => {
   const [ file, setFile ] = useState('')
   const [ files, setFiles ] = useState([])
+  const [ loaded, setLoaded ] = useState(false)
   useEffect(() => {
     const getVideos = async() => {
       const response = await fetch('videos')
@@ -12,10 +13,16 @@ export const VideoArea = () => {
       setFiles(data)
       // データがある場合は最初のファイルをセットする
       data.length ? setFile(data[0].fileName) : setFile('')
+      // ローディング表示をわかりやすくするためにあえて0.5秒待つ
+      // 実データが多くなり時間がかかるようになったら不要
+      setTimeout(() => {
+        setLoaded(true)
+      }, 500)
     }
     getVideos()
   }, [])
   return(
+    loaded ?
     <>
       <div className="container">
         <div className="row">
@@ -28,6 +35,12 @@ export const VideoArea = () => {
             />
           </div>
         </div>
+      </div>
+    </>
+    :
+    <>
+      <div className="container">
+        Loading...
       </div>
     </>
   )
